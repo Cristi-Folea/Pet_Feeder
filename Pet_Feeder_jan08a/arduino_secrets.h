@@ -1,0 +1,3 @@
+#define SECRET_DEVICE_KEY "2BsvxS4oMq95!UF6KpR8uEf1G"
+#define SECRET_OPTIONAL_PASS "vasile1970"
+#define SECRET_SSID "sopti"
