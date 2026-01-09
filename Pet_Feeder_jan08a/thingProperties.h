@@ -9,26 +9,26 @@ const char SSID[]               = SECRET_SSID;    // Network SSID (name)
 const char PASS[]               = SECRET_OPTIONAL_PASS;    // Network password (use for WPA, or use as key for WEP)
 const char DEVICE_KEY[]  = SECRET_DEVICE_KEY;    // Secret device password
 
+void onNivelGraunteChange();
 void onFeedSchedule1Change();
 void onFeedSchedule2Change();
 void onFeedSchedule3Change();
-void onFeedSchedule4Change();
 void onManualFeedChange();
 
+int nivel_Graunte;
 CloudSchedule feed_schedule1;
 CloudSchedule feed_schedule2;
 CloudSchedule feed_schedule3;
-CloudSchedule feed_schedule4;
 bool manual_feed;
 
 void initProperties(){
 
   ArduinoCloud.setBoardId(DEVICE_LOGIN_NAME);
   ArduinoCloud.setSecretDeviceKey(DEVICE_KEY);
+  ArduinoCloud.addProperty(nivel_Graunte, READWRITE, ON_CHANGE, onNivelGraunteChange);
   ArduinoCloud.addProperty(feed_schedule1, READWRITE, ON_CHANGE, onFeedSchedule1Change);
   ArduinoCloud.addProperty(feed_schedule2, READWRITE, ON_CHANGE, onFeedSchedule2Change);
   ArduinoCloud.addProperty(feed_schedule3, READWRITE, ON_CHANGE, onFeedSchedule3Change);
-  ArduinoCloud.addProperty(feed_schedule4, READWRITE, ON_CHANGE, onFeedSchedule4Change);
   ArduinoCloud.addProperty(manual_feed, READWRITE, ON_CHANGE, onManualFeedChange);
 
 }

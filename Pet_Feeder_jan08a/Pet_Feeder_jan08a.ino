@@ -7,10 +7,10 @@
 
   The following variables are automatically generated and updated when changes are made to the Thing
 
+  int nivel_Graunte;
   CloudSchedule feed_schedule1;
   CloudSchedule feed_schedule2;
   CloudSchedule feed_schedule3;
-  CloudSchedule feed_schedule4;
   bool manual_feed;
 
   Variables which are marked as READ/WRITE in the Cloud Thing will also have functions
@@ -22,18 +22,21 @@
 
 bool comanda_trimisa_deja = false;
 
+
+void sendSignalFeeder( ){
+  Serial.write('H');
+  Serial.write(nivel_Graunte + '0');
+  
+}
+
 void setup() {
   // Initialize serial and wait for port to open:
   Serial.begin(115200);
-  // This delay gives the chance to wait for a Serial Monitor without blocking if none is found
   delay(1500); 
-
   // Defined in thingProperties.h
   initProperties();
-
   // Connect to Arduino IoT Cloud
   ArduinoCloud.begin(ArduinoIoTPreferredConnection);
-  
   /*
      The following function allows you to obtain more information
      related to the state of network and IoT Cloud connection and errors
@@ -43,33 +46,27 @@ void setup() {
  */
   setDebugMessageLevel(2);
   ArduinoCloud.printDebugInfo();
+  data[0] = 'H';
+  data[2] = '\0';
 }
 
 void loop() {
   ArduinoCloud.update();
   // Your code here 
-
-  bool e_timpul_de_masa = feed_schedule1.isActive();
+  bool e_timpul_de_masa = feed_schedule1.isActive() || feed_schedule2.isActive() || feed_schedule3.isActive();
 
   if( e_timpul_de_masa){
 
     if(!comanda_trimisa_deja){
-
-      Serial.println('H');
+      sendSignalFeeder();
       comanda_trimisa_deja = true;
-
-    } else {
-
-        comanda_trimisa_deja = false;
-      }
+    } 
+  }
+    else {
+      comanda_trimisa_deja = false;
   }
 }
 
-
-/*
-  Since TurnOn is READ_WRITE variable, onTurnOnChange() is
-  executed every time a new value is received from IoT Cloud.
-*/
 
 /*
   Since ManualFeed is READ_WRITE variable, onManualFeedChange() is
@@ -78,8 +75,8 @@ void loop() {
 void onManualFeedChange()  {
   // Add your code here to act upon ManualFeed change
   if (manual_feed == true){
-    
-    Serial.println('H');
+
+    sendSignalFeeder();
 
     manual_feed = false;
   }
@@ -113,6 +110,7 @@ void onFeedSchedule3Change()  {
   Since FeedSchedule4 is READ_WRITE variable, onFeedSchedule4Change() is
   executed every time a new value is received from IoT Cloud.
 */
-void onFeedSchedule4Change()  {
-  // Add your code here to act upon FeedSchedule4 change
+
+void onNivelGraunteChange(){
+
 }
