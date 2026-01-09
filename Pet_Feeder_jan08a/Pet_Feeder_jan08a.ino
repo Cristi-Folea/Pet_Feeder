@@ -46,8 +46,7 @@ void setup() {
  */
   setDebugMessageLevel(2);
   ArduinoCloud.printDebugInfo();
-  data[0] = 'H';
-  data[2] = '\0';
+
 }
 
 void loop() {
