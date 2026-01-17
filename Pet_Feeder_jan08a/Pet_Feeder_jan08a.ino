@@ -111,5 +111,6 @@ void onFeedSchedule3Change()  {
 */
 
 void onNivelGraunteChange(){
-
+  Serial.write('G');
+  Serial.write(nivel_Graunte + '0');
 }
