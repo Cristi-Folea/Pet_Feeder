@@ -21,8 +21,8 @@ int timpCurgere[] = {400,600,800}; // timp curgere
 char dataBuffer[3]; //buffer pentru a citi
 
 // --- TIMING ---
-const long TIMEOUT_SENZOR = 300000;
-unsigned long ultimulTimpSenzor = 0;
+const long TIMEOUT_SENZOR = 10000;
+unsigned long ultimulTimpSenzor =TIMEOUT_SENZOR+10 ;
 
 
 
@@ -40,61 +40,81 @@ void setup() {
   //Pozitia initiala:
   feederServo.write(POZITIE_INCHIS);
 
-  delay(500); 
+  delay(1000); 
 }
 
 void loop() {
   // Verificăm dacă ESP-ul a strigat la noi
-  if (Serial.available() >= 2) {
+    if (Serial.available() >= 2) {
 
-    // Citim caracterul
-    int bytesRead = Serial.readBytes(dataBuffer,2);
-    dataBuffer[bytesRead] = '\0';
+    
+      // Citim caracterul
+      int bytesRead = Serial.readBytes(dataBuffer,2);
+      dataBuffer[bytesRead] = '\0';
 
-    int mod = dataBuffer[1] - '0';
-    char comanda = dataBuffer[0];
-    switch (comanda){
-      case 'H': //Comanda de dat mancare:
-        if (mod > 0 && mod <= 3){
-          executeFeeding(mod);
-        }
-        break;
-      case 'U': //Comanda de schimbat ultrasunete: 
-        if (mod == 0){
-          senzorUltrasunetePornit = false;
-        }
-        if ( mod == 1){
-          senzorUltrasunetePornit = true;
-        }
-        break;
-      default : break;
-    }
-  }
-
-  if (senzorUltrasunetePornit){
-
-    if(millis() - ultimulTimpSenzor > TIMEOUT_SENZOR){
-      if(prezentaUltrasunete()){
-        executeFeeding(1);
-        ultimulTimpSenzor = millis();
+      int mod = dataBuffer[1] - '0';
+      char comanda = dataBuffer[0];
+      switch (comanda){
+        case 'H': //Comanda de dat mancare:
+          
+          if (mod > 0 && mod <= 3){
+            executeFeeding(mod);
+          }
+          break;
+        case 'U': //Comanda de schimbat ultrasunete: 
+          
+          if (mod == 0){
+            senzorUltrasunetePornit = false;
+            
+          }
+          if ( mod == 1){
+            senzorUltrasunetePornit = true;
+            
+          }
+          break;
+        default :
+          while (Serial.available()>0){
+            char junk = Serial.read();
+          }
+          break;
       }
     }
 
-  }
+    if (senzorUltrasunetePornit){
+          
+          if (millis() - ultimulTimpSenzor > TIMEOUT_SENZOR && prezentaUltrasunete()) {
+           
+            executeFeeding(1);
+            ultimulTimpSenzor = millis(); 
+            
+          }
+          
+    }
+
 }
 
+
 bool prezentaUltrasunete (){
+
   digitalWrite(PIN_TRIG, LOW);
   delayMicroseconds(2);
-  digitalWrite(PIN_TRIG,HIGH);
+  digitalWrite(PIN_TRIG, HIGH);
   delayMicroseconds(10);
   digitalWrite(PIN_TRIG, LOW);
+  delayMicroseconds(40);
 
-  long duration = pulseIn(PIN_ECHO, HIGH, 30000);
-  if (duration == 0) return false;
+  
+  long duration = pulseIn(PIN_ECHO, HIGH,30000);
 
   float distance = (duration * .0343/2);
-  return (distance > 0 && distance <= threshold);
+  if(distance <= 40){
+    delay(100);
+  }
+
+  else{
+    delay(50);
+  }
+  return (distance > 6.0 && distance <= threshold);
   
 }
 

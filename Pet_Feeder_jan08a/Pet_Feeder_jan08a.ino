@@ -55,11 +55,10 @@ void setup() {
      The default is 0 (only errors).
      Maximum is 4
  */
-  setDebugMessageLevel(2);
-  ArduinoCloud.printDebugInfo();
+  //setDebugMessageLevel(0);
+  //ArduinoCloud.printDebugInfo();
 
   delay(1500);
-  sendSignalSensor();
 
 }
 
