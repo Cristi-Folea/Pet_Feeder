@@ -12,14 +12,14 @@ const char DEVICE_KEY[]  = SECRET_DEVICE_KEY;    // Secret device password
 void onNivelGraunteChange();
 void onFeedSchedule1Change();
 void onFeedSchedule2Change();
-void onFeedSchedule3Change();
 void onManualFeedChange();
+void onSenzorProximitateChange();
 
 int nivel_Graunte;
 CloudSchedule feed_schedule1;
 CloudSchedule feed_schedule2;
-CloudSchedule feed_schedule3;
 bool manual_feed;
+bool senzor_proximitate;
 
 void initProperties(){
 
@@ -28,8 +28,8 @@ void initProperties(){
   ArduinoCloud.addProperty(nivel_Graunte, READWRITE, ON_CHANGE, onNivelGraunteChange);
   ArduinoCloud.addProperty(feed_schedule1, READWRITE, ON_CHANGE, onFeedSchedule1Change);
   ArduinoCloud.addProperty(feed_schedule2, READWRITE, ON_CHANGE, onFeedSchedule2Change);
-  ArduinoCloud.addProperty(feed_schedule3, READWRITE, ON_CHANGE, onFeedSchedule3Change);
   ArduinoCloud.addProperty(manual_feed, READWRITE, ON_CHANGE, onManualFeedChange);
+  ArduinoCloud.addProperty(senzor_proximitate, READWRITE, ON_CHANGE, onSenzorProximitateChange);
 
 }
 

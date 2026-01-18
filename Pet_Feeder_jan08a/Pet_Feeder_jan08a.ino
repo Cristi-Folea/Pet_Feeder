@@ -7,11 +7,11 @@
 
   The following variables are automatically generated and updated when changes are made to the Thing
 
-  int nivel_Graunte;
-  CloudSchedule feed_schedule1;
-  CloudSchedule feed_schedule2;
-  CloudSchedule feed_schedule3;
-  bool manual_feed;
+ int nivel_Graunte;
+CloudSchedule feed_schedule1;
+CloudSchedule feed_schedule2;
+bool manual_feed;
+bool senzor_proximitate;
 
   Variables which are marked as READ/WRITE in the Cloud Thing will also have functions
   which are called when their values are changed from the Dashboard.
@@ -23,9 +23,20 @@
 bool comanda_trimisa_deja = false;
 
 
-void sendSignalFeeder( ){
+void sendSignalFeeder(){
   Serial.write('H');
   Serial.write(nivel_Graunte + '0');
+  
+}
+
+void sendSignalSensor(){
+  Serial.write('U');
+  if(senzor_proximitate){
+    Serial.write('1');
+  }
+  else{
+    Serial.write('0');
+  }
   
 }
 
@@ -47,12 +58,15 @@ void setup() {
   setDebugMessageLevel(2);
   ArduinoCloud.printDebugInfo();
 
+  delay(1500);
+  sendSignalSensor();
+
 }
 
 void loop() {
   ArduinoCloud.update();
   // Your code here 
-  bool e_timpul_de_masa = feed_schedule1.isActive() || feed_schedule2.isActive() || feed_schedule3.isActive();
+  bool e_timpul_de_masa = feed_schedule1.isActive() || feed_schedule2.isActive();
 
   if( e_timpul_de_masa){
 
@@ -97,20 +111,12 @@ void onFeedSchedule2Change()  {
   // Add your code here to act upon FeedSchedule2 change
 }
 
-/*
-  Since FeedSchedule3 is READ_WRITE variable, onFeedSchedule3Change() is
-  executed every time a new value is received from IoT Cloud.
-*/
-void onFeedSchedule3Change()  {
-  // Add your code here to act upon FeedSchedule3 change
+void onSenzorProximitateChange()  {
+
+sendSignalSensor();
+
 }
 
-/*
-  Since FeedSchedule4 is READ_WRITE variable, onFeedSchedule4Change() is
-  executed every time a new value is received from IoT Cloud.
-*/
-
 void onNivelGraunteChange(){
-  Serial.write('G');
-  Serial.write(nivel_Graunte + '0');
+
 }
